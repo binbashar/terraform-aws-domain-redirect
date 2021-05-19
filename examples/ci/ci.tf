@@ -1,12 +1,27 @@
 terraform {
-  required_version = ">= 0.12.0"
+  required_version = ">=0.15.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.4.0"
+    }
+  }
 }
 
 provider "aws" {
-  version = "~> 2.42"
-  region  = "us-west-2"
+  region = "us-west-2"
+}
+
+provider "aws" {
+  region = "us-east-1"
+  alias  = "us_east_1"
 }
 
 module "ci_test" {
-  source = "../../"
+  source        = "../../"
+  source_domain = "redirect-test.byu-oit-terraform-dev.amazon.byu.edu"
+  target_url    = "byu.edu"
+  providers = {
+    aws.us_east_1 = aws.us_east_1
+  }
 }
