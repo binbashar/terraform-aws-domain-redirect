@@ -15,7 +15,7 @@ module "domain_redirect" {
 ```
 
 ## Requirements
-* Terraform version 0.12.16 or greater
+* Terraform version 0.15.0 or greater
 
 ## Inputs
 | Name | Type  | Description | Default |
