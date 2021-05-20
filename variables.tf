@@ -22,6 +22,6 @@ variable "redirect_bucket_name" {
 
 variable "tags" {
   type        = map(string)
-  description = "Tags to add to each of the resources"
+  description = "A map of AWS Tags to attach to each resource created (optional)"
   default     = {}
 }
