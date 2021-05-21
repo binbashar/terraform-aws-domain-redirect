@@ -14,14 +14,15 @@ provider "aws" {
 
 provider "aws" {
   region = "us-east-1"
-  alias  = "us_east_1"
+  alias  = "us-east-1"
 }
 
 module "ci_test" {
-  source        = "../../"
-  source_domain = "redirect-test.byu-oit-terraform-dev.amazon.byu.edu"
-  target_url    = "byu.edu"
+  source                         = "../../"
+  source_hosted_zone_name        = "redirect-test.byu-oit-terraform-dev.amazon.byu.edu"
+  source_hosted_zone_sub_domains = ["www.redirect-test.byu-oit-terraform-dev.amazon.byu.edu"]
+  target_url                     = "byu.edu"
   providers = {
-    aws.us_east_1 = aws.us_east_1
+    aws.us-east-1 = aws.us-east-1
   }
 }

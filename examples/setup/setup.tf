@@ -1,3 +1,13 @@
+terraform {
+  backend "s3" {
+    # byu-oit-terraform-dev
+    bucket         = "terraform-state-storage-977306314792"
+    dynamodb_table = "terraform-state-lock-977306314792"
+    key            = "domain-redirect-module-example/setup.tfstate"
+    region         = "us-west-2"
+  }
+}
+
 provider "aws" {
   region = "us-west-2"
 }

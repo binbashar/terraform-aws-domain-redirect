@@ -4,18 +4,18 @@ terraform {
     aws = {
       source                = "hashicorp/aws"
       version               = ">= 3.4.0"
-      configuration_aliases = [aws.us_east_1]
+      configuration_aliases = [aws.us-east-1]
     }
   }
 }
 
 locals {
-  bucket_name = var.redirect_bucket_name != null ? var.redirect_bucket_name : "${var.source_domain}-redirect"
-  domain_urls = setunion([var.source_domain], var.sub_domains)
+  bucket_name = var.redirect_bucket_name != null ? var.redirect_bucket_name : "${var.source_hosted_zone_name}-redirect"
+  domain_urls = setunion([var.source_hosted_zone_name], var.source_hosted_zone_sub_domains)
 }
 
 data "aws_route53_zone" "source_zone" {
-  name = var.source_domain
+  name = var.source_hosted_zone_name
 }
 
 // ***** START SSL certificate for the source zone *****
@@ -25,7 +25,7 @@ resource "aws_acm_certificate" "cert" {
   validation_method = "DNS"
   tags              = var.tags
 
-  subject_alternative_names = var.sub_domains
+  subject_alternative_names = var.source_hosted_zone_sub_domains
 
   lifecycle {
     create_before_destroy = true
@@ -55,12 +55,12 @@ resource "aws_acm_certificate_validation" "validation" {
 }
 
 resource "aws_acm_certificate" "cert_us_east_1" {
-  provider          = aws.us_east_1
+  provider          = aws.us-east-1
   domain_name       = data.aws_route53_zone.source_zone.name
   validation_method = "DNS"
   tags              = var.tags
 
-  subject_alternative_names = var.sub_domains
+  subject_alternative_names = var.source_hosted_zone_sub_domains
 
   lifecycle {
     create_before_destroy = true
@@ -68,7 +68,7 @@ resource "aws_acm_certificate" "cert_us_east_1" {
 }
 
 resource "aws_route53_record" "validation_record_us_east_1" {
-  provider = aws.us_east_1
+  provider = aws.us-east-1
   for_each = {
     for dvo in aws_acm_certificate.cert_us_east_1.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
@@ -86,7 +86,7 @@ resource "aws_route53_record" "validation_record_us_east_1" {
 }
 
 resource "aws_acm_certificate_validation" "validation_us_east_1" {
-  provider                = aws.us_east_1
+  provider                = aws.us-east-1
   certificate_arn         = aws_acm_certificate.cert_us_east_1.arn
   validation_record_fqdns = [for record in aws_route53_record.validation_record_us_east_1 : record.fqdn]
 }
@@ -138,7 +138,7 @@ resource "aws_cloudfront_distribution" "redirect" {
     }
   }
 
-  comment         = "${var.source_domain} redirect to ${var.target_url}"
+  comment         = "${var.source_hosted_zone_name} redirect to ${var.target_url}"
   enabled         = true
   is_ipv6_enabled = true
   aliases         = local.domain_urls
