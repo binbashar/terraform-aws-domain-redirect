@@ -18,9 +18,10 @@ provider "aws" {
 }
 
 module "ci_test" {
-  source        = "../../"
-  source_domain = "redirect-test.byu-oit-terraform-dev.amazon.byu.edu"
-  target_url    = "byu.edu"
+  source                         = "../../"
+  source_hosted_zone_name        = "redirect-test.byu-oit-terraform-dev.amazon.byu.edu"
+  source_hosted_zone_sub_domains = ["www.redirect-test.byu-oit-terraform-dev.amazon.byu.edu"]
+  target_url                     = "byu.edu"
   providers = {
     aws.us-east-1 = aws.us-east-1
   }
