@@ -30,6 +30,10 @@ jobs:
     strategy:
       matrix:
         terraform: ['0.15.x']
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v2
 
