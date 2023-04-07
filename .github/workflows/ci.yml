@@ -13,10 +13,10 @@ jobs:
     name: Terraform Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Terraform Setup
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: '0.15.x'
 
@@ -35,17 +35,17 @@ jobs:
       actions: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets[env.aws_key_name] }}
           aws-secret-access-key: ${{ secrets[env.aws_secret_name] }}
           aws-region: us-west-2
 
       - name: Terraform Setup
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ matrix.terraform }}
 
@@ -65,7 +65,7 @@ jobs:
           terraform-plan-file: plan.tfplan
 
       - name: Analyze Terraform Plan
-        uses: byu-oit/github-action-tf-plan-analyzer@v2.0.2
+        uses: byu-oit/github-action-tf-plan-analyzer@v2
         with:
           divvycloud-username: ${{ secrets.DIVVYCLOUD_USERNAME }}
           divvycloud-password: ${{ secrets.DIVVYCLOUD_PASSWORD }}
