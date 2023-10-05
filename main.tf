@@ -20,40 +20,6 @@ data "aws_route53_zone" "source_zone" {
 
 // ***** START SSL certificate for the source zone *****
 // SSL certificate for CloudFront distribution
-resource "aws_acm_certificate" "cert" {
-  domain_name       = data.aws_route53_zone.source_zone.name
-  validation_method = "DNS"
-  tags              = var.tags
-
-  subject_alternative_names = var.source_hosted_zone_sub_domains
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_route53_record" "validation_record" {
-  for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.source_zone.zone_id
-}
-
-resource "aws_acm_certificate_validation" "validation" {
-  certificate_arn         = aws_acm_certificate.cert.arn
-  validation_record_fqdns = [for record in aws_route53_record.validation_record : record.fqdn]
-}
-
 resource "aws_acm_certificate" "cert_us_east_1" {
   provider          = aws.us-east-1
   domain_name       = data.aws_route53_zone.source_zone.name
