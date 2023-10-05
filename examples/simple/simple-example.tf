@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 module "domain-redirect" {
-  source = "github.com/byu-oit/terraform-aws-domain-redirect?ref=v1.0.0"
+  source = "github.com/byu-oit/terraform-aws-domain-redirect?ref=v1.0.1"
   #source = "../" # for local testing during module development
   source_hosted_zone_name = "redirect-test.byu-oit-terraform-dev.amazon.byu.edu"
   target_url              = "byu.edu"
