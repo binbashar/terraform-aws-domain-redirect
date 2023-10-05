@@ -11,7 +11,7 @@ See [architecture](#architecture).
 ## Usage
 ```hcl
 module "domain_redirect" {
-  source                  = "github.com/byu-oit/terraform-aws-domain-redirect?ref=v1.0.0"
+  source                  = "github.com/byu-oit/terraform-aws-domain-redirect?ref=v1.0.1"
   source_hosted_zone_name = "extradomain.byu.edu"
   target_url              = "newdomain.byu.edu"
   providers = {
